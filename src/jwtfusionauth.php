@@ -2,7 +2,7 @@
 
 namespace werk365\jwtfusionauth;
 
-use App\jwk;
+use werk365\Models\jwk;
 use App\User;
 use Firebase\JWT\JWT;
 use phpseclib\Crypt\RSA;

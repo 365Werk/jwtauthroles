@@ -1,6 +1,7 @@
 {
     "name": "werk365/jwtfusionauth",
-    "description": ":package_description",
+    "description": "Use JWT to auth users in Laravel"
+    "version": "1.0.0-alpha",
     "license": "MIT",
     "authors": [
         {
