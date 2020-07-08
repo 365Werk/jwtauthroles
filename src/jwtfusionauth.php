@@ -83,7 +83,7 @@ class jwtfusionauth
         $kid = self::getKid($jwt);
         if ($kid) {
             $row = jwk::where('kid', $kid)->orderBy('created_at', 'desc')->first();
-            if (false) {
+            if ($row) {
                 $publicKey = $row->key;
             }
             else {
