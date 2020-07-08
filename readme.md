@@ -2,10 +2,10 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
-[![Build Status][ico-travis]][link-travis]
-[![StyleCI][ico-styleci]][link-styleci]
 
-This is where your description should go. Take a look at [contributing.md](contributing.md) to see a to do list.
+Package to authorize laravel users using JWT tok
+
+Take a look at [contributing.md](contributing.md) to see a to do list.
 
 ## Installation
 
@@ -15,7 +15,49 @@ Via Composer
 $ composer require werk365/jwtfusionauth
 ```
 
+Publish config and migration
+
+```bash
+$ php artisan vendor:publish --provider="werk365\jwtfusionauth\jwtfusionauthServiceProvider"
+```
+
+Run migration
+```bash
+$ php artisan migrate
+```
+
 ## Usage
+
+In your AuthServiceProvider modify boot()
+```php
+public function boot()
+{
+    $this->registerPolicies();
+
+    Auth::viaRequest('jwt', function ($request) {
+        return jwtfusionauth::authUser($request);
+    });
+}
+```
+
+Then either change one of your guards in config/auth.php to use the jwt driver, or add a new guard
+```php
+'jwt' => [
+    'driver' => 'jwt',
+    'provider' => 'users',
+    'hash' => false,
+],
+```
+Now you can use the JWT guard in your routes, for example on a group:
+```php
+Route::group(['middleware' => ['auth:jwt']], function () {
+    // Routes can go here
+});
+```
+
+If you do not use laravel-permission by spatie make sure to disable those features in the config. 
+Also make sure to disable creating new users if user column have no default values and you wish to use more column in the users table than just the uuid column.
+By default the uuid will be put in the 'id' column, make sure this supports uuids. It's also possible to define a different uuid column in the config and have regular incrementing IDs. 
 
 ## Change log
 
@@ -23,9 +65,7 @@ Please see the [changelog](changelog.md) for more information on what has change
 
 ## Testing
 
-``` bash
-$ composer test
-```
+Testing is not yet implemented
 
 ## Contributing
 
@@ -37,7 +77,7 @@ If you discover any security related issues, please email author email instead o
 
 ## Credits
 
-- [author name][link-author]
+- [Hergen Dillema][link-author]
 - [All Contributors][link-contributors]
 
 ## License
@@ -51,7 +91,5 @@ license. Please see the [license file](license.md) for more information.
 
 [link-packagist]: https://packagist.org/packages/werk365/jwtfusionauth
 [link-downloads]: https://packagist.org/packages/werk365/jwtfusionauth
-[link-travis]: https://travis-ci.org/werk365/jwtfusionauth
-[link-styleci]: https://styleci.io/repos/12345678
-[link-author]: https://github.com/werk365
+[link-author]: https://github.com/HergenD
 [link-contributors]: ../../contributors
