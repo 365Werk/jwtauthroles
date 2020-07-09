@@ -1,6 +1,6 @@
 <?php
 
-namespace werk365\jwtfusionauth\Models;
+namespace werk365\jwtauthroles\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

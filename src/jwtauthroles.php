@@ -1,15 +1,15 @@
 <?php
 
-namespace werk365\jwtfusionauth;
+namespace werk365\jwtauthroles;
 
-use werk365\jwtfusionauth\Models\jwk;
+use werk365\jwtauthroles\Models\jwk;
 use App\User;
 use Firebase\JWT\JWT;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
 use Spatie\Permission\Models\Role;
 
-class jwtfusionauth
+class jwtauthroles
 {
     private static function getKid(string $jwt) {
         $tks = explode('.', $jwt);
@@ -105,17 +105,17 @@ class jwtfusionauth
     public static function authUser(object $request)
     {
         $jwt = $request->bearerToken();
-        $uri = config('jwtfusionauth.useJwk')?config('jwtfusionauth.jwkUri'):config('jwtfusionauth.pemUri');
-        $claims = self::verifyToken($jwt, $uri, config('jwtfusionauth.useJwk'));
-        if(config('jwtfusionauth.autoCreateUser')){
-            $user = User::firstOrNew([config('jwtfusionauth.userId') =>  $claims->sub]);
-            $user[config('jwtfusionauth.userId')] = $claims->sub;
+        $uri = config('jwtauthroles.useJwk')?config('jwtauthroles.jwkUri'):config('jwtauthroles.pemUri');
+        $claims = self::verifyToken($jwt, $uri, config('jwtauthroles.useJwk'));
+        if(config('jwtauthroles.autoCreateUser')){
+            $user = User::firstOrNew([config('jwtauthroles.userId') =>  $claims->sub]);
+            $user[config('jwtauthroles.userId')] = $claims->sub;
             $user->save();
         } else {
-            $user = User::where(config('jwtfusionauth.userId'), '=' , $claims->sub)->firstOrFail();
+            $user = User::where(config('jwtauthroles.userId'), '=' , $claims->sub)->firstOrFail();
         }
-        if(config('jwtfusionauth.usePermissions')){
-            if(config('jwtfusionauth.autoCreateRoles')){
+        if(config('jwtauthroles.usePermissions')){
+            if(config('jwtauthroles.autoCreateRoles')){
                 foreach($claims->roles as $role){
                     $db_role = Role::where('name', $role)->first();
                     if(!$db_role){

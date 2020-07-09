@@ -1,12 +1,12 @@
 <?php
 
-namespace werk365\jwtfusionauth;
+namespace werk365\jwtauthroles;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
-class jwtfusionauthServiceProvider extends ServiceProvider
+class jwtauthrolesServiceProvider extends ServiceProvider
 {
     public function boot(Filesystem $filesystem)
     {
@@ -22,7 +22,7 @@ class jwtfusionauthServiceProvider extends ServiceProvider
 
         if (function_exists('config_path')) { // function not available and 'publish' not relevant in Lumen
             $this->publishes([
-                __DIR__.'/../config/jwtfusionauth.php' => config_path('jwtfusionauth.php'),
+                __DIR__.'/../config/jwtauthroles.php' => config_path('jwtauthroles.php'),
             ], 'config');
 
             $this->publishes([
@@ -38,11 +38,11 @@ class jwtfusionauthServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/jwtfusionauth.php', 'jwtfusionauth');
+        $this->mergeConfigFrom(__DIR__.'/../config/jwtauthroles.php', 'jwtauthroles');
 
         // Register the service the package provides.
-        $this->app->singleton('jwtfusionauth', function ($app) {
-            return new jwtfusionauth;
+        $this->app->singleton('jwtauthroles', function ($app) {
+            return new jwtauthroles;
         });
     }
 
@@ -53,7 +53,7 @@ class jwtfusionauthServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['jwtfusionauth'];
+        return ['jwtauthroles'];
     }
 
     /**
@@ -65,23 +65,23 @@ class jwtfusionauthServiceProvider extends ServiceProvider
     {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__.'/../config/jwtfusionauth.php' => config_path('jwtfusionauth.php'),
-        ], 'jwtfusionauth.config');
+            __DIR__.'/../config/jwtauthroles.php' => config_path('jwtauthroles.php'),
+        ], 'jwtauthroles.config');
 
         // Publishing the views.
         /*$this->publishes([
             __DIR__.'/../resources/views' => base_path('resources/views/vendor/werk365'),
-        ], 'jwtfusionauth.views');*/
+        ], 'jwtauthroles.views');*/
 
         // Publishing assets.
         /*$this->publishes([
             __DIR__.'/../resources/assets' => public_path('vendor/werk365'),
-        ], 'jwtfusionauth.views');*/
+        ], 'jwtauthroles.views');*/
 
         // Publishing the translation files.
         /*$this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/werk365'),
-        ], 'jwtfusionauth.views');*/
+        ], 'jwtauthroles.views');*/
 
         // Registering package commands.
         // $this->commands([]);

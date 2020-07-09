@@ -1,4 +1,4 @@
-# jwtfusionauth
+# jwtauthroles
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
@@ -12,13 +12,13 @@ Take a look at [contributing.md](contributing.md) to see a to do list.
 Via Composer
 
 ``` bash
-$ composer require werk365/jwtfusionauth
+$ composer require werk365/jwtauthroles
 ```
 
 Publish config and migration
 
 ```bash
-$ php artisan vendor:publish --provider="werk365\jwtfusionauth\jwtfusionauthServiceProvider"
+$ php artisan vendor:publish --provider="werk365\jwtauthroles\jwtauthrolesServiceProvider"
 ```
 
 Run migration
@@ -35,7 +35,7 @@ public function boot()
     $this->registerPolicies();
 
     Auth::viaRequest('jwt', function ($request) {
-        return jwtfusionauth::authUser($request);
+        return jwtauthroles::authUser($request);
     });
 }
 ```
@@ -84,12 +84,12 @@ If you discover any security related issues, please email author email instead o
 
 license. Please see the [license file](license.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/werk365/jwtfusionauth.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/werk365/jwtfusionauth.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/werk365/jwtfusionauth/master.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/werk365/jwtauthroles.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/werk365/jwtauthroles.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/werk365/jwtauthroles/master.svg?style=flat-square
 [ico-styleci]: https://styleci.io/repos/12345678/shield
 
-[link-packagist]: https://packagist.org/packages/werk365/jwtfusionauth
-[link-downloads]: https://packagist.org/packages/werk365/jwtfusionauth
+[link-packagist]: https://packagist.org/packages/werk365/jwtauthroles
+[link-downloads]: https://packagist.org/packages/werk365/jwtauthroles
 [link-author]: https://github.com/HergenD
 [link-contributors]: ../../contributors

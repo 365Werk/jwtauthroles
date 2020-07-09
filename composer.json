@@ -1,6 +1,6 @@
 {
-    "name": "werk365/jwtfusionauth",
-    "description": "Use JWT to auth users in Laravel",
+    "name": "werk365/jwtauthroles",
+    "description": "Use JWT to auth users and assign roles in Laravel",
     "version": "1.0.0-alpha",
     "license": "MIT",
     "authors": [
@@ -10,8 +10,8 @@
             "homepage": "https://365werk/nl"
         }
     ],
-    "homepage": "https://github.com/365werk/jwtfusionauth",
-    "keywords": ["Laravel", "jwtfusionauth"],
+    "homepage": "https://github.com/365werk/jwtauthroles",
+    "keywords": ["Laravel", "jwtauthroles"],
     "require": {
         "illuminate/support": "~5|~6|~7",
         "firebase/php-jwt": "^5.2",
@@ -25,21 +25,21 @@
     },
     "autoload": {
         "psr-4": {
-            "werk365\\jwtfusionauth\\": "src/"
+            "werk365\\jwtauthroles\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "werk365\\jwtfusionauth\\Tests\\": "tests"
+            "werk365\\jwtauthroles\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "werk365\\jwtfusionauth\\jwtfusionauthServiceProvider"
+                "werk365\\jwtauthroles\\jwtauthrolesServiceProvider"
             ],
             "aliases": {
-                "jwtfusionauth": "werk365\\jwtfusionauth\\Facades\\jwtfusionauth"
+                "jwtauthroles": "werk365\\jwtauthroles\\Facades\\jwtauthroles"
             }
         }
     }

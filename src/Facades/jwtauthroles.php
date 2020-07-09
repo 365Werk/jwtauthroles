@@ -1,10 +1,10 @@
 <?php
 
-namespace werk365\jwtfusionauth\Facades;
+namespace werk365\jwtauthroles\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class jwtfusionauth extends Facade
+class jwtauthroles extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -13,6 +13,6 @@ class jwtfusionauth extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'jwtfusionauth';
+        return 'jwtauthroles';
     }
 }
