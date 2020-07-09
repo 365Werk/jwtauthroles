@@ -2,7 +2,7 @@
 
 namespace werk365\jwtauthroles;
 
-use werk365\jwtauthroles\Models\jwk;
+use werk365\jwtauthroles\Models\JwtKey;
 use App\User;
 use Firebase\JWT\JWT;
 use phpseclib\Crypt\RSA;
@@ -107,7 +107,7 @@ class jwtauthroles
         $publicKey = null;
         $kid = self::getKid($jwt);
         if ($kid) {
-            $row = jwk::where('kid', $kid)->orderBy('created_at', 'desc')->first();
+            $row = JwtKey::where('kid', $kid)->orderBy('created_at', 'desc')->first();
             if ($row) {
                 $publicKey = $row->key;
             }
@@ -117,7 +117,7 @@ class jwtauthroles
                 } else {
                     $publicKey = self::getPem($kid, $uri);
                 }
-                $row = jwk::create(['kid' => $kid, 'key' => $publicKey]);
+                $row = JwtKey::create(['kid' => $kid, 'key' => $publicKey]);
             }
         }
 

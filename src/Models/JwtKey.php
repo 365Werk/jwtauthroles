@@ -4,7 +4,7 @@ namespace werk365\jwtauthroles\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class jwk extends Model
+class JwtKey extends Model
 {
     //
     protected $fillable = ['kid', 'key'];

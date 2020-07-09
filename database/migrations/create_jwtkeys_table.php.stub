@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJwksTable extends Migration
+class CreateJwtKeysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateJwksTable extends Migration
      */
     public function up()
     {
-        Schema::create('jwks', function (Blueprint $table) {
+        Schema::create('jwt_keys', function (Blueprint $table) {
             $table->id();
             $table->string('kid');
             $table->text('key');
@@ -28,6 +28,6 @@ class CreateJwksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jwks');
+        Schema::dropIfExists('jwt_keys');
     }
 }

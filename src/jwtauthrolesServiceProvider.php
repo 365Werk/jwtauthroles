@@ -26,7 +26,7 @@ class jwtauthrolesServiceProvider extends ServiceProvider
             ], 'config');
 
             $this->publishes([
-                __DIR__.'/../database/migrations/create_jwks_table.php.stub' => $this->getMigrationFileName($filesystem),
+                __DIR__.'/../database/migrations/create_jwtkeys_table.php.stub' => $this->getMigrationFileName($filesystem),
             ], 'migrations');
         }
     }
@@ -99,8 +99,8 @@ class jwtauthrolesServiceProvider extends ServiceProvider
 
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
             ->flatMap(function ($path) use ($filesystem) {
-                return $filesystem->glob($path.'*_create_jwks_table.php');
-            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_jwks_table.php")
+                return $filesystem->glob($path.'*_create_jwtkeys_table.php');
+            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_jwtkeys_table.php")
             ->first();
     }
 }
