@@ -11,6 +11,11 @@ use Spatie\Permission\Models\Role;
 
 class jwtauthroles
 {
+
+    /**
+     * @param string $jwt
+     * @return string|null
+     */
     private static function getKid(string $jwt) {
         $tks = explode('.', $jwt);
         if (count($tks) === 3) {
@@ -22,6 +27,10 @@ class jwtauthroles
         return null;
     }
 
+    /**
+     * @param object $jwk
+     * @return bool|string|null
+     */
     private static function jwkToPem(object $jwk)
     {
         if (isset($jwk->e) && isset($jwk->n)) {
@@ -35,9 +44,14 @@ class jwtauthroles
         return null;
     }
 
+    /**
+     * @param string $kid
+     * @param string $uri
+     * @return bool|string|null
+     */
     private static function getPublicKey(string $kid, string $uri) {
-        $jwksUrl = sprintf($uri);
-        $ch = curl_init($jwksUrl);
+        $jwksUri = sprintf($uri);
+        $ch = curl_init($jwksUri);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 3,
@@ -56,6 +70,11 @@ class jwtauthroles
         return null;
     }
 
+    /**
+     * @param string $kid
+     * @param string $uri
+     * @return string|null
+     */
     private static function getPem(string $kid, string $uri) {
         $pemUrl = sprintf($uri);
         $ch = curl_init($pemUrl);
@@ -77,6 +96,12 @@ class jwtauthroles
         return null;
     }
 
+    /**
+     * @param string $jwt
+     * @param string $uri
+     * @param bool $jwk
+     * @return object|null
+     */
     private static function verifyToken(string $jwt, string $uri, bool $jwk = false)
     {
         $publicKey = null;
@@ -102,6 +127,10 @@ class jwtauthroles
         return null;
     }
 
+    /**
+     * @param object $request
+     * @return mixed
+     */
     public static function authUser(object $request)
     {
         $jwt = $request->bearerToken();
@@ -123,7 +152,8 @@ class jwtauthroles
                     }
                 }
             }
-            $user->assignRole($claims->roles);
+            // Remove previously assigned roles and update from JWT
+            $user->syncRoles($claims->roles);
         }
         return $user;
     }
