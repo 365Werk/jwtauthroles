@@ -1,6 +1,6 @@
 {
     "name": "werk365/jwtauthroles",
-    "description": "Use JWT to auth users and assign roles in Laravel",
+    "description": "Made to use fusionauth users in Laravel using JWT. Possible to either use pem keys directly or use the jwks endpoint.",
     "version": "1.0.0-alpha",
     "license": "MIT",
     "authors": [

@@ -3,7 +3,13 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Package to authorize laravel users using JWT tok
+Made to use fusionauth users in laravel using JWT. Possible to either use pem keys directly or use the jwks endpoint.
+
+User roles from JWT can be converted to spatie/laravel-permissions roles automatically so the package can be used normally for permissions.
+
+Even though it was made for fusionauth, should be quite general purpose for using JWTs/ jwks and roles in laravel.
+
+.
 
 Take a look at [contributing.md](contributing.md) to see a to do list.
 
