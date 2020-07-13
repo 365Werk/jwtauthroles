@@ -16,5 +16,12 @@ return [
     // To use this, installing the permissions package is required
     'usePermissions' => env('FA_USE_PERM', true),
     // Creates a role if not found in database
-    'autoCreateRoles' => env('FA_CREATE_ROLES', true)
+    'autoCreateRoles' => env('FA_CREATE_ROLES', true),
+
+    'alg' => env('FA_ALG', 'RS256'),
+
+    'cache' => [
+        'enabled' => env('FA_CACHE_ENABLED', false),
+        'type' => env('FA_CACHE_TYPE', 'database')
+    ]
 ];

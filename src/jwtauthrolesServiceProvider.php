@@ -6,7 +6,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
-class jwtauthrolesServiceProvider extends ServiceProvider
+class jwtAuthRolesServiceProvider extends ServiceProvider
 {
     public function boot(Filesystem $filesystem)
     {
@@ -22,7 +22,7 @@ class jwtauthrolesServiceProvider extends ServiceProvider
 
         if (function_exists('config_path')) { // function not available and 'publish' not relevant in Lumen
             $this->publishes([
-                __DIR__.'/../config/jwtauthroles.php' => config_path('jwtauthroles.php'),
+                __DIR__ . '/../config/jwtAuthRoles.php' => config_path('jwtAuthRoles.php'),
             ], 'config');
 
             $this->publishes([
@@ -38,11 +38,11 @@ class jwtauthrolesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/jwtauthroles.php', 'jwtauthroles');
+        $this->mergeConfigFrom(__DIR__ . '/../config/jwtAuthRoles.php', 'jwtAuthRoles');
 
         // Register the service the package provides.
-        $this->app->singleton('jwtauthroles', function ($app) {
-            return new jwtauthroles;
+        $this->app->singleton('jwtAuthRoles', function ($app) {
+            return new jwtAuthRoles;
         });
     }
 
@@ -53,7 +53,7 @@ class jwtauthrolesServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['jwtauthroles'];
+        return ['jwtAuthRoles'];
     }
 
     /**
@@ -65,23 +65,23 @@ class jwtauthrolesServiceProvider extends ServiceProvider
     {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__.'/../config/jwtauthroles.php' => config_path('jwtauthroles.php'),
-        ], 'jwtauthroles.config');
+            __DIR__ . '/../config/jwtAuthRoles.php' => config_path('jwtAuthRoles.php'),
+        ], 'jwtAuthRoles.config');
 
         // Publishing the views.
         /*$this->publishes([
             __DIR__.'/../resources/views' => base_path('resources/views/vendor/werk365'),
-        ], 'jwtauthroles.views');*/
+        ], 'jwtAuthRoles.views');*/
 
         // Publishing assets.
         /*$this->publishes([
             __DIR__.'/../resources/assets' => public_path('vendor/werk365'),
-        ], 'jwtauthroles.views');*/
+        ], 'jwtAuthRoles.views');*/
 
         // Publishing the translation files.
         /*$this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/werk365'),
-        ], 'jwtauthroles.views');*/
+        ], 'jwtAuthRoles.views');*/
 
         // Registering package commands.
         // $this->commands([]);

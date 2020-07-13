@@ -24,7 +24,7 @@ $ composer require werk365/jwtauthroles
 Publish config and migration
 
 ```bash
-$ php artisan vendor:publish --provider="werk365\jwtauthroles\jwtauthrolesServiceProvider"
+$ php artisan vendor:publish --provider="werk365\jwtauthroles\jwtAuthRolesServiceProvider"
 ```
 
 Run migration
@@ -36,6 +36,8 @@ $ php artisan migrate
 
 In your AuthServiceProvider modify boot()
 ```php
+use werk365\jwtauthroles\jwtAuthRoles;
+
 public function boot()
 {
     $this->registerPolicies();

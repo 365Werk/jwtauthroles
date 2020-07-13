@@ -2,6 +2,9 @@
 
 namespace werk365\jwtauthroles;
 
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
+use werk365\jwtauthroles\Exceptions\authException;
 use werk365\jwtauthroles\Models\JwtKey;
 use App\User;
 use Firebase\JWT\JWT;
@@ -9,7 +12,7 @@ use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
 use Spatie\Permission\Models\Role;
 
-class jwtauthroles
+class jwtAuthRoles
 {
 
     /**
@@ -17,12 +20,12 @@ class jwtauthroles
      * @return string|null
      */
     private static function getKid(string $jwt) {
-        $tks = explode('.', $jwt);
-        if (count($tks) === 3) {
-            $header = JWT::jsonDecode(JWT::urlsafeB64Decode($tks[0]));
-            if (isset($header->kid)) {
-                return $header->kid;
+        if (Str::is('*.*.*', $jwt)) {
+            $header = JWT::jsonDecode(JWT::urlsafeB64Decode(Str::before($jwt, '.')));
+            if(isset($header->alg) && $header->alg !== config('jwtAuthRoles.alg')){
+                throw authException::auth(422, 'Invalid algorithm');
             }
+            return $header->kid ?? null;
         }
         return null;
     }
@@ -41,7 +44,7 @@ class jwtauthroles
             ]);
             return $rsa->getPublicKey();
         }
-        return null;
+        throw authException::auth(500, 'Malformed jwk');
     }
 
     /**
@@ -49,14 +52,9 @@ class jwtauthroles
      * @param string $uri
      * @return bool|string|null
      */
-    private static function getPublicKey(string $kid, string $uri) {
-        $jwksUri = sprintf($uri);
-        $ch = curl_init($jwksUri);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 3,
-        ]);
-        $json = curl_exec($ch);
+    private static function getJwk(string $kid, string $uri) {
+        $response = Http::get($uri);
+        $json = $response->getBody();
         if ($json) {
             $jwks = json_decode($json, false);
             if ($jwks && isset($jwks->keys) && is_array($jwks->keys)) {
@@ -67,7 +65,7 @@ class jwtauthroles
                 }
             }
         }
-        return null;
+        throw authException::auth(404, 'jwks endpoint not found');
     }
 
     /**
@@ -76,13 +74,8 @@ class jwtauthroles
      * @return string|null
      */
     private static function getPem(string $kid, string $uri) {
-        $pemUrl = sprintf($uri);
-        $ch = curl_init($pemUrl);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 3,
-        ]);
-        $json = curl_exec($ch);
+        $response = Http::get($uri);
+        $json = $response->getBody();
         if ($json) {
             $pems = json_decode($json, false);
             if ($pems && isset($pems->publicKeys) && is_object($pems->publicKeys)) {
@@ -93,38 +86,34 @@ class jwtauthroles
                 }
             }
         }
-        return null;
+        throw authException::auth(404, 'pem endpoint not found');
     }
 
     /**
      * @param string $jwt
      * @param string $uri
      * @param bool $jwk
-     * @return object|null
+     * @return object
      */
     private static function verifyToken(string $jwt, string $uri, bool $jwk = false)
     {
-        $publicKey = null;
         $kid = self::getKid($jwt);
-        if ($kid) {
-            $row = JwtKey::where('kid', $kid)->orderBy('created_at', 'desc')->first();
-            if ($row) {
-                $publicKey = $row->key;
-            }
-            else {
-                if($jwk){
-                    $publicKey = self::getPublicKey($kid, $uri);
-                } else {
-                    $publicKey = self::getPem($kid, $uri);
-                }
-                $row = JwtKey::create(['kid' => $kid, 'key' => $publicKey]);
+        if (!$kid) {throw authException::auth(422, 'Malformed JWT');}
+        if(config('jwtAuthRoles.cache.enabled')){
+            if(config('jwtAuthRoles.cache.type') === 'database'){
+                $row = JwtKey::where('kid', $kid)->orderBy('created_at', 'desc')->first('key');
             }
         }
 
-        if ($publicKey) {
-            return JWT::decode($jwt, $publicKey, array('RS256'));
+        $publicKey = $row->key ?? $jwk?self::getJwk($kid, $uri):self::getPem($kid, $uri);
+        if(!isset($publicKey) || !$publicKey){throw authException::auth(500, 'Unable to validate JWT');}
+
+        if(config('jwtAuthRoles.cache.enabled')) {
+            if(config('jwtAuthRoles.cache.type') === 'database') {
+                $row = $row ?? JwtKey::create(['kid' => $kid, 'key' => $publicKey]);
+            }
         }
-        return null;
+        return JWT::decode($jwt, $publicKey, array(config('jwtAuthRoles.alg')));
     }
 
     /**
@@ -134,17 +123,17 @@ class jwtauthroles
     public static function authUser(object $request)
     {
         $jwt = $request->bearerToken();
-        $uri = config('jwtauthroles.useJwk')?config('jwtauthroles.jwkUri'):config('jwtauthroles.pemUri');
-        $claims = self::verifyToken($jwt, $uri, config('jwtauthroles.useJwk'));
-        if(config('jwtauthroles.autoCreateUser')){
-            $user = User::firstOrNew([config('jwtauthroles.userId') =>  $claims->sub]);
-            $user[config('jwtauthroles.userId')] = $claims->sub;
+        $uri = config('jwtAuthRoles.useJwk')?config('jwtAuthRoles.jwkUri'):config('jwtAuthRoles.pemUri');
+        $claims = self::verifyToken($jwt, $uri, config('jwtAuthRoles.useJwk'));
+        if(config('jwtAuthRoles.autoCreateUser')){
+            $user = User::firstOrNew([config('jwtAuthRoles.userId') =>  $claims->sub]);
+            $user[config('jwtAuthRoles.userId')] = $claims->sub;
             $user->save();
         } else {
-            $user = User::where(config('jwtauthroles.userId'), '=' , $claims->sub)->firstOrFail();
+            $user = User::where(config('jwtAuthRoles.userId'), '=' , $claims->sub)->firstOrFail();
         }
-        if(config('jwtauthroles.usePermissions')){
-            if(config('jwtauthroles.autoCreateRoles')){
+        if(config('jwtAuthRoles.usePermissions')){
+            if(config('jwtAuthRoles.autoCreateRoles')){
                 foreach($claims->roles as $role){
                     $db_role = Role::where('name', $role)->first();
                     if(!$db_role){
