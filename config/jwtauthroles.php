@@ -22,6 +22,6 @@ return [
 
     'cache' => [
         'enabled' => env('FA_CACHE_ENABLED', false),
-        'type' => env('FA_CACHE_TYPE', 'database')
-    ]
+        'type' => env('FA_CACHE_TYPE', 'database'),
+    ],
 ];
