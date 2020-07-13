@@ -23,7 +23,7 @@ class jwtAuthRoles
     {
         if (Str::is('*.*.*', $jwt)) {
             $header = JWT::jsonDecode(JWT::urlsafeB64Decode(Str::before($jwt, '.')));
-            if(isset($header->alg) && $header->alg !== config('jwtAuthRoles.alg')) {
+            if (isset($header->alg) && $header->alg !== config('jwtAuthRoles.alg')) {
                 throw authException::auth(422, 'Invalid algorithm');
             }
             return $header->kid ?? null;
@@ -42,7 +42,7 @@ class jwtAuthRoles
             $rsa = new RSA();
             $rsa->loadKey([
                 'e' => new BigInteger(JWT::urlsafeB64Decode($jwk->e), 256),
-                'n' => new BigInteger(JWT::urlsafeB64Decode($jwk->n), 256)
+                'n' => new BigInteger(JWT::urlsafeB64Decode($jwk->n), 256),
             ]);
             return $rsa->getPublicKey();
         }
@@ -76,7 +76,8 @@ class jwtAuthRoles
      * @param string $uri
      * @return string|null
      */
-    private static function getPem(string $kid, string $uri) {
+    private static function getPem(string $kid, string $uri)
+    {
         $response = Http::get($uri);
         $json = $response->getBody();
         if ($json) {
@@ -101,26 +102,26 @@ class jwtAuthRoles
     private static function verifyToken(string $jwt, string $uri, bool $jwk = false)
     {
         $kid = self::getKid($jwt);
-        if (!$kid) {
+        if (! $kid) {
             throw authException::auth(422, 'Malformed JWT');
         }
-        if(config('jwtAuthRoles.cache.enabled')) {
-            if(config('jwtAuthRoles.cache.type') === 'database') {
+        if (config('jwtAuthRoles.cache.enabled')) {
+            if (config('jwtAuthRoles.cache.type') === 'database') {
                 $row = JwtKey::where('kid', $kid)->orderBy('created_at', 'desc')->first('key');
             }
         }
 
         $publicKey = $row->key ?? $jwk ? self::getJwk($kid, $uri) : self::getPem($kid, $uri);
-        if(!isset($publicKey) || !$publicKey) {
+        if (! isset($publicKey) || ! $publicKey) {
             throw authException::auth(500, 'Unable to validate JWT');
         }
 
-        if(config('jwtAuthRoles.cache.enabled')) {
-            if(config('jwtAuthRoles.cache.type') === 'database') {
+        if (config('jwtAuthRoles.cache.enabled')) {
+            if (config('jwtAuthRoles.cache.type') === 'database') {
                 $row = $row ?? JwtKey::create(['kid' => $kid, 'key' => $publicKey]);
             }
         }
-        return JWT::decode($jwt, $publicKey, array(config('jwtAuthRoles.alg')));
+        return JWT::decode($jwt, $publicKey, [config('jwtAuthRoles.alg')]);
     }
 
     /**
@@ -132,18 +133,18 @@ class jwtAuthRoles
         $jwt = $request->bearerToken();
         $uri = config('jwtAuthRoles.useJwk') ? config('jwtAuthRoles.jwkUri') : config('jwtAuthRoles.pemUri');
         $claims = self::verifyToken($jwt, $uri, config('jwtAuthRoles.useJwk'));
-        if(config('jwtAuthRoles.autoCreateUser')) {
+        if (config('jwtAuthRoles.autoCreateUser')) {
             $user = User::firstOrNew([config('jwtAuthRoles.userId') =>  $claims->sub]);
             $user[config('jwtAuthRoles.userId')] = $claims->sub;
             $user->save();
         } else {
             $user = User::where(config('jwtAuthRoles.userId'), '=', $claims->sub)->firstOrFail();
         }
-        if(config('jwtAuthRoles.usePermissions')) {
-            if(config('jwtAuthRoles.autoCreateRoles')) {
+        if (config('jwtAuthRoles.usePermissions')) {
+            if (config('jwtAuthRoles.autoCreateRoles')) {
                 foreach($claims->roles as $role) {
                     $db_role = Role::where('name', $role)->first();
-                    if(! $db_role){
+                    if (! $db_role){
                         Role::create(['name' => $role]);
                     }
                 }
@@ -151,6 +152,7 @@ class jwtAuthRoles
             // Remove previously assigned roles and update from JWT
             $user->syncRoles($claims->roles);
         }
+        
         return $user;
     }
 }
