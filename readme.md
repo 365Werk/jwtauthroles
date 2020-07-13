@@ -2,6 +2,7 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
+![StyleCI][ico-styleci]
 
 Made to use fusionauth users in laravel using JWT. Possible to either use pem keys directly or use the jwks endpoint.
 
@@ -95,7 +96,7 @@ license. Please see the [license file](license.md) for more information.
 [ico-version]: https://img.shields.io/packagist/v/werk365/jwtauthroles.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/werk365/jwtauthroles.svg?style=flat-square
 [ico-travis]: https://img.shields.io/travis/werk365/jwtauthroles/master.svg?style=flat-square
-[ico-styleci]: https://styleci.io/repos/12345678/shield
+[ico-styleci]: https://github.styleci.io/repos/278075608/shield
 
 [link-packagist]: https://packagist.org/packages/werk365/jwtauthroles
 [link-downloads]: https://packagist.org/packages/werk365/jwtauthroles
