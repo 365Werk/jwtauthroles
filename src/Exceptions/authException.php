@@ -9,6 +9,7 @@ class authException extends HttpException
     public static function auth(int $status, string $message): self
     {
         $exception = new static($status, $message, null, []);
+
         return $exception;
     }
 }
