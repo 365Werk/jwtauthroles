@@ -14,7 +14,6 @@ use werk365\jwtauthroles\Models\JwtKey;
 
 class jwtAuthRoles
 {
-
     /**
      * @param string $jwt
      * @return string|null
@@ -26,6 +25,7 @@ class jwtAuthRoles
             if (isset($header->alg) && $header->alg !== config('jwtAuthRoles.alg')) {
                 throw authException::auth(422, 'Invalid algorithm');
             }
+
             return $header->kid ?? null;
         } else {
             throw authException::auth(422, 'Malformed JWT');
@@ -44,6 +44,7 @@ class jwtAuthRoles
                 'e' => new BigInteger(JWT::urlsafeB64Decode($jwk->e), 256),
                 'n' => new BigInteger(JWT::urlsafeB64Decode($jwk->n), 256),
             ]);
+
             return $rsa->getPublicKey();
         }
         throw authException::auth(500, 'Malformed jwk');
@@ -121,6 +122,7 @@ class jwtAuthRoles
                 $row = $row ?? JwtKey::create(['kid' => $kid, 'key' => $publicKey]);
             }
         }
+
         return JWT::decode($jwt, $publicKey, [config('jwtAuthRoles.alg')]);
     }
 
@@ -142,9 +144,9 @@ class jwtAuthRoles
         }
         if (config('jwtAuthRoles.usePermissions')) {
             if (config('jwtAuthRoles.autoCreateRoles')) {
-                foreach($claims->roles as $role) {
+                foreach ($claims->roles as $role) {
                     $db_role = Role::where('name', $role)->first();
-                    if (! $db_role){
+                    if (! $db_role) {
                         Role::create(['name' => $role]);
                     }
                 }
