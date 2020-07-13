@@ -43,7 +43,7 @@ public function boot()
     $this->registerPolicies();
 
     Auth::viaRequest('jwt', function ($request) {
-        return jwtauthroles::authUser($request);
+        return jwtAuthRoles::authUser($request);
     });
 }
 ```
