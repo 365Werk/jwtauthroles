@@ -2,8 +2,12 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
+[![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+
 ![StyleCI][ico-styleci]
 [![Scrutinizer Quality][ico-scrutinizer]][link-scrutinizer]
+![Tests](https://github.com/365Werk/Laravel-JWT-Auth-Roles/workflows/Run%20Tests/badge.svg)
+
 
 Made to use fusionauth users in laravel using JWT. Possible to either use pem keys directly or use the jwks endpoint.
 
