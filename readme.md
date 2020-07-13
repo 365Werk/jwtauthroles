@@ -1,4 +1,4 @@
-# jwtauthroles
+# JWT Auth and Roles
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
