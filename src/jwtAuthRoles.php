@@ -154,7 +154,7 @@ class jwtAuthRoles
             // Remove previously assigned roles and update from JWT
             $user->syncRoles($claims->roles);
         }
-        
+
         return $user;
     }
 }
