@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
-[![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](license.md)
+[![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](license.md) [![Join the chat at https://gitter.im/werk365/Laravel-JWT-Auth-Roles](https://badges.gitter.im/werk365/Laravel-JWT-Auth-Roles.svg)](https://gitter.im/werk365/Laravel-JWT-Auth-Roles?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ![StyleCI][ico-styleci]
 [![Scrutinizer Quality][ico-scrutinizer]][link-scrutinizer]
