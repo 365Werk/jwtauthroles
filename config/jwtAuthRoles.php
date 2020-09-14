@@ -24,4 +24,8 @@ return [
         'enabled' => env('FA_CACHE_ENABLED', false),
         'type' => env('FA_CACHE_TYPE', 'database'),
     ],
+
+    // Allows you to skip validation, this is potentially dangerous,
+    // only use for testing or if the jwt has been validated by something like an api gateway
+    'validateJwt' => env('FA_VALIDATE', false),
 ];

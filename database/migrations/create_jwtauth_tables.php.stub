@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJwtKeysTable extends Migration
+class CreateJwtAuthTables extends Migration
 {
     /**
      * Run the migrations.
@@ -16,7 +16,14 @@ class CreateJwtKeysTable extends Migration
         Schema::create('jwt_keys', function (Blueprint $table) {
             $table->id();
             $table->string('kid');
-            $table->text('key');
+            $table->json('key');
+            $table->timestamps();
+        });
+
+        Schema::create('jwt_users', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->text('jwt');
             $table->timestamps();
         });
     }

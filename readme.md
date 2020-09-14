@@ -54,14 +54,25 @@ public function boot()
 }
 ```
 
-Then either change one of your guards in config/auth.php to use the jwt driver, or add a new guard
+Then either change one of your guards in config/auth.php to use the jwt driver and jwt_users provider, or add a new guard
 ```php
 'jwt' => [
     'driver' => 'jwt',
-    'provider' => 'users',
+    'provider' => 'jwt_users',
     'hash' => false,
 ],
 ```
+
+```php
+    'providers' => [
+    // ...
+        'jwt_users' => [
+            'driver' => 'eloquent',
+            'model' => \werk365\jwtauthroles\Models\JwtUser::class,
+        ],
+    ],
+```
+
 Now you can use the JWT guard in your routes, for example on a group:
 ```php
 Route::group(['middleware' => ['auth:jwt']], function () {
@@ -69,9 +80,7 @@ Route::group(['middleware' => ['auth:jwt']], function () {
 });
 ```
 
-If you do not use laravel-permission by spatie make sure to disable those features in the config. 
-Also make sure to disable creating new users if user column have no default values and you wish to use more column in the users table than just the uuid column.
-By default the uuid will be put in the 'id' column, make sure this supports uuids. It's also possible to define a different uuid column in the config and have regular incrementing IDs. 
+If you do not use laravel-permission by spatie make sure to disable those features in the config.
 
 ## Change log
 
