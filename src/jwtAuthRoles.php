@@ -2,7 +2,6 @@
 
 namespace werk365\jwtauthroles;
 
-use werk365\jwtauthroles\Models\JwtUser;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -11,10 +10,10 @@ use phpseclib\Math\BigInteger;
 use Spatie\Permission\Models\Role;
 use werk365\jwtauthroles\Exceptions\authException;
 use werk365\jwtauthroles\Models\JwtKey;
+use werk365\jwtauthroles\Models\JwtUser;
 
 class jwtAuthRoles
 {
-
     private static function getKid(string $jwt): ?string
     {
         if (Str::is('*.*.*', $jwt)) {
@@ -34,6 +33,7 @@ class jwtAuthRoles
         if (Str::is('*.*.*', $jwt)) {
             $claims = explode('.', $jwt);
             $claims = JWT::jsonDecode(JWT::urlsafeB64Decode($claims[1]));
+
             return $claims ?? null;
         } else {
             throw authException::auth(422, 'Malformed JWT');
@@ -138,7 +138,7 @@ class jwtAuthRoles
             ? config('jwtAuthRoles.jwkUri')
             : config('jwtAuthRoles.pemUri');
 
-        if (!config('jwtAuthRoles.validateJwt')) {
+        if (! config('jwtAuthRoles.validateJwt')) {
             $claims = self::getClaims($jwt);
         } else {
             $claims = self::verifyToken($jwt, $uri, config('jwtAuthRoles.useJwk'));

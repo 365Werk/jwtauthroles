@@ -26,7 +26,7 @@ class jwtAuthRolesServiceProvider extends ServiceProvider
             ], 'config');
 
             $this->publishes([
-                __DIR__ . '/../database/migrations/create_jwtauth_tables.php.stub' => $this->getMigrationFileName($filesystem),
+                __DIR__.'/../database/migrations/create_jwtauth_tables.php.stub' => $this->getMigrationFileName($filesystem),
             ], 'migrations');
         }
     }
