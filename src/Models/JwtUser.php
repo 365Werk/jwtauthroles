@@ -2,7 +2,6 @@
 
 namespace werk365\jwtauthroles\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
