@@ -23,7 +23,8 @@ class CreateJwtAuthTables extends Migration
         Schema::create('jwt_users', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->text('jwt');
+            $table->json('roles');
+            $table->json('claims');
             $table->timestamps();
         });
     }

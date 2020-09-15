@@ -1,7 +1,7 @@
 {
     "name": "werk365/jwtauthroles",
     "description": "Made to use fusionauth users in Laravel using JWT. Possible to either use pem keys directly or use the jwks endpoint.",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "license": "MIT",
     "authors": [
         {
