@@ -3,7 +3,6 @@
 namespace werk365\jwtauthroles\Models;
 
 use App\User;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
 class JwtUser extends User
