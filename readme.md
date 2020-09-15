@@ -29,7 +29,7 @@ $ composer require werk365/jwtauthroles
 Publish config and migration
 
 ```bash
-$ php artisan vendor:publish --provider="werk365\jwtauthroles\jwtAuthRolesServiceProvider"
+$ php artisan vendor:publish --provider="werk365\jwtauthroles\JwtAuthRolesServiceProvider"
 ```
 
 Run migration
@@ -41,14 +41,14 @@ $ php artisan migrate
 
 In your AuthServiceProvider modify boot()
 ```php
-use werk365\jwtauthroles\jwtAuthRoles;
+use werk365\jwtauthroles\JwtAuthRoles;
 
 public function boot()
 {
     $this->registerPolicies();
 
     Auth::viaRequest('jwt', function ($request) {
-        return jwtAuthRoles::authUser($request);
+        return JwtAuthRoles::authUser($request);
     });
 }
 ```
@@ -63,11 +63,13 @@ Then either change one of your guards in config/auth.php to use the jwt driver a
 ```
 
 ```php
+use werk365\JwtAuthRoles\Models\JwtUser;
+
     'providers' => [
     // ...
         'jwt_users' => [
-            'driver' => 'eloquent',
-            'model' => \werk365\jwtauthroles\Models\JwtUser::class,
+            'driver' => 'session', // or eloquent
+            'model' => JwtUser::class,
         ],
     ],
 ```
