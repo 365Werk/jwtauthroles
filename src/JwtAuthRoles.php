@@ -1,6 +1,6 @@
 <?php
 
-namespace werk365\jwtauthroles;
+namespace werk365\JwtAuthRoles;
 
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Http;
