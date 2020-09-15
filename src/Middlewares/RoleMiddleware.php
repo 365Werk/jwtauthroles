@@ -16,7 +16,7 @@ class RoleMiddleware
         $user_roles = array_map('strtolower', Auth::user()->roles);
         $same = (array_intersect($roles, $user_roles));
 
-        if(!$same) {
+        if (! $same) {
             throw AuthException::auth('401', 'User does not have right roles');
         }
 
