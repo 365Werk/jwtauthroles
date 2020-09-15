@@ -1,10 +1,12 @@
 <?php
 
-namespace werk365\JwtAuthRoles;
+namespace werk365\jwtauthroles;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
+use werk365\jwtauthroles\Middlewares\RoleMiddleware;
 
 class JwtAuthRolesServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,9 @@ class JwtAuthRolesServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
+
+        $router = $this->app->make(Router::class);
+        $router->aliasMiddleware('role', RoleMiddleware::class);
 
         if (function_exists('config_path')) { // function not available and 'publish' not relevant in Lumen
             $this->publishes([
