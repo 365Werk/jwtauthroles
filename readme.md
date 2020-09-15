@@ -63,7 +63,7 @@ Then either change one of your guards in config/auth.php to use the jwt driver a
 ```
 
 ```php
-use werk365\JwtAuthRoles\Models\JwtUser;
+use werk365\jwtauthroles\Models\JwtUser;
 
     'providers' => [
     // ...
