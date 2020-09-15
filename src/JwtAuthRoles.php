@@ -143,7 +143,7 @@ class JwtAuthRoles
             $claims = self::verifyToken($jwt, $uri, config('jwtauthroles.useJwk'));
         }
 
-        if(config('jwtauthroles.useDB')) {
+        if (config('jwtauthroles.useDB')) {
             if (config('jwtauthroles.autoCreateUser')) {
                 $user = JwtUser::firstOrNew([config('jwtauthroles.userId') => $claims->sub]);
                 $user[config('jwtauthroles.userId')] = $claims->sub;

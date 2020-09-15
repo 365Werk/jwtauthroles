@@ -22,7 +22,7 @@ class JwtAuthRolesServiceProvider extends ServiceProvider
 
         if (function_exists('config_path')) { // function not available and 'publish' not relevant in Lumen
             $this->publishes([
-                __DIR__ . '/../config/jwtauthroles.php' => config_path('jwtauthroles.php'),
+                __DIR__.'/../config/jwtauthroles.php' => config_path('jwtauthroles.php'),
             ], 'config');
 
             $this->publishes([
@@ -38,7 +38,7 @@ class JwtAuthRolesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/jwtauthroles.php', 'jwtauthroles');
+        $this->mergeConfigFrom(__DIR__.'/../config/jwtauthroles.php', 'jwtauthroles');
 
         // Register the service the package provides.
         $this->app->singleton('JwtAuthRoles', function ($app) {
@@ -65,7 +65,7 @@ class JwtAuthRolesServiceProvider extends ServiceProvider
     {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__ . '/../config/jwtauthroles.php' => config_path('jwtauthroles.php'),
+            __DIR__.'/../config/jwtauthroles.php' => config_path('jwtauthroles.php'),
         ], 'jwtauthroles.config');
 
         // Publishing the views.
