@@ -104,7 +104,7 @@ For example, add the following relationship in the default User model:
 ```php
     public function documents()
     {
-        return $this->hasMany('App\Document', 'user', 'uuid');
+        return $this->hasMany('App\Models\Document', 'user', 'uuid');
     }
 ```
 This assumes you have a Documents model where the uuid provided by your identity provider is stored in a 'user' column, this can be anything you want of course, but the local key should always be uuid.
