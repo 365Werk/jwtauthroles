@@ -1,12 +1,12 @@
 <?php
 
-namespace werk365\jwtauthroles;
+namespace Werk365\JwtAuthRoles;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
-use werk365\jwtauthroles\Middlewares\RoleMiddleware;
+use Werk365\JwtAuthRoles\Middlewares\RoleMiddleware;
 
 class JwtAuthRolesServiceProvider extends ServiceProvider
 {

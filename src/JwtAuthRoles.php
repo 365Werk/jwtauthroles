@@ -1,99 +1,104 @@
 <?php
 
-namespace werk365\JwtAuthRoles;
+namespace Werk365\JwtAuthRoles;
 
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
-use werk365\jwtauthroles\Exceptions\AuthException;
-use werk365\jwtauthroles\Models\JwtKey;
-use werk365\jwtauthroles\Models\JwtUser;
+use Werk365\JwtAuthRoles\Exceptions\AuthException;
+use Werk365\JwtAuthRoles\Models\JwtKey;
+use Werk365\JwtAuthRoles\Models\JwtUser;
 
 class JwtAuthRoles
 {
     private static function getKid(string $jwt): ?string
     {
-        if (Str::is('*.*.*', $jwt)) {
-            $header = JWT::jsonDecode(JWT::urlsafeB64Decode(Str::before($jwt, '.')));
-            if (isset($header->alg) && $header->alg !== config('jwtauthroles.alg')) {
-                throw AuthException::auth(422, 'Invalid algorithm');
-            }
-
-            return $header->kid ?? null;
-        } else {
+        if (!Str::is('*.*.*', $jwt)) {
             throw AuthException::auth(422, 'Malformed JWT');
         }
+
+        $header = JWT::jsonDecode(JWT::urlsafeB64Decode(Str::before($jwt, '.')));
+
+        if (isset($header->alg) && $header->alg !== config('jwtauthroles.alg')) {
+            throw AuthException::auth(422, 'Invalid algorithm');
+        }
+
+        return $header->kid ?? null;
     }
 
     private static function getClaims(string $jwt): ?object
     {
-        if (Str::is('*.*.*', $jwt)) {
-            $claims = explode('.', $jwt);
-            $claims = JWT::jsonDecode(JWT::urlsafeB64Decode($claims[1]));
-
-            return $claims ?? null;
-        } else {
+        if (!Str::is('*.*.*', $jwt)) {
             throw AuthException::auth(422, 'Malformed JWT');
         }
+
+        $claims = explode('.', $jwt);
+        $claims = JWT::jsonDecode(JWT::urlsafeB64Decode($claims[1]));
+
+        return $claims ?? null;
     }
 
-    /**
-     * @param object $jwk
-     * @return bool|string|null
-     */
-    private static function jwkToPem(object $jwk)
+    private static function jwkToPem(object $jwk): ?string
     {
-        if (isset($jwk->e) && isset($jwk->n)) {
-            $rsa = new RSA();
-            $rsa->loadKey([
-                'e' => new BigInteger(JWT::urlsafeB64Decode($jwk->e), 256),
-                'n' => new BigInteger(JWT::urlsafeB64Decode($jwk->n), 256),
-            ]);
-
-            return $rsa->getPublicKey();
+        if (!isset($jwk->e) || !isset($jwk->n)) {
+            throw AuthException::auth(500, 'Malformed jwk');
         }
-        throw AuthException::auth(500, 'Malformed jwk');
+
+        $rsa = new RSA();
+        $rsa->loadKey([
+            'e' => new BigInteger(JWT::urlsafeB64Decode($jwk->e), 256),
+            'n' => new BigInteger(JWT::urlsafeB64Decode($jwk->n), 256),
+        ]);
+
+        return $rsa->getPublicKey();
     }
 
-    /**
-     * @param string $kid
-     * @param string $uri
-     * @return bool|string|null
-     */
-    private static function getJwk(string $kid, string $uri)
+    private static function getJwk(string $kid, string $uri): ?string
     {
         $response = Http::get($uri);
         $json = $response->getBody();
-        if ($json) {
-            $jwks = json_decode($json, false);
-            if ($jwks && isset($jwks->keys) && is_array($jwks->keys)) {
-                foreach ($jwks->keys as $jwk) {
-                    if ($jwk->kid === $kid) {
-                        return self::jwkToPem($jwk);
-                    }
-                }
+        if (!$json) {
+            throw AuthException::auth(404, 'jwks endpoint not found');
+        }
+
+        $jwks = json_decode($json, false);
+
+        if (!$jwks || !isset($jwks->keys) || !is_array($jwks->keys)) {
+            throw AuthException::auth(404, 'No JWKs found');
+        }
+
+        foreach ($jwks->keys as $jwk) {
+            if ($jwk->kid === $kid) {
+                return self::jwkToPem($jwk);
             }
         }
-        throw AuthException::auth(404, 'jwks endpoint not found');
+
+        throw AuthException::auth(401, 'Unauthorized');
     }
 
     private static function getPem(string $kid, string $uri): ?string
     {
         $response = Http::get($uri);
         $json = $response->getBody();
-        if ($json) {
-            $pems = json_decode($json, false);
-            if ($pems && isset($pems->publicKeys) && is_object($pems->publicKeys)) {
-                foreach ($pems->publicKeys as $key=>$pem) {
-                    if ($key === $kid) {
-                        return $pem;
-                    }
-                }
+        if (!$json) {
+            throw AuthException::auth(404, 'pem endpoint not found');
+        }
+
+        $pems = json_decode($json, false);
+
+        if (!$pems || !isset($pems->publicKeys) || !is_object($pems->publicKeys)) {
+            throw AuthException::auth(404, 'pem not found');
+        }
+
+        foreach ($pems->publicKeys as $key=>$pem) {
+            if ($key === $kid) {
+                return $pem;
             }
         }
-        throw AuthException::auth(404, 'pem endpoint not found');
+
+        throw AuthException::auth(401, 'Unauthorized');
     }
 
     private static function verifyToken(string $jwt, string $uri, bool $jwk = false): object
@@ -128,7 +133,6 @@ class JwtAuthRoles
         return JWT::decode($jwt, $publicKey, [config('jwtauthroles.alg')]);
     }
 
-    /** @return mixed */
     public static function authUser(object $request)
     {
         $jwt = $request->bearerToken();
@@ -157,7 +161,7 @@ class JwtAuthRoles
                 $user->save();
             }
         } else {
-            $user = new JwtUser();
+            $user = new JwtUser;
             $user->uuid = $claims->sub;
             $user->roles = $claims->roles;
             $user->claims = $claims;

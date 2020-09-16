@@ -9,10 +9,9 @@
 ![Tests](https://github.com/365Werk/Laravel-JWT-Auth-Roles/workflows/Run%20Tests/badge.svg)
 
 
-Made to use fusionauth users in laravel using JWT. Possible to either use pem keys directly or use the jwks endpoint.
+Made to use JWTs from an external identity provider in Laravel. Tested with Fusionauth, but should be quite general purpose.
 
-
-Even though it was made for fusionauth, should be quite general purpose for using JWTs/ jwks and roles in laravel.
+With this package you can validate the incoming JWT, and create an authenticated user that has to roles specified in the JWT for further (route based) authentication using a role middleware that is included.
 
 .
 
@@ -29,8 +28,10 @@ $ composer require werk365/jwtauthroles
 Publish config and migration
 
 ```bash
-$ php artisan vendor:publish --provider="werk365\jwtauthroles\JwtAuthRolesServiceProvider"
+$ php artisan vendor:publish --provider="Werk365\JwtAuthRoles\JwtAuthRolesServiceProvider"
 ```
+
+Migrations are only needed if you want to either cache the JWKs or store the user, this can be configured in the config. It's possible to use this package without storing anything related to it in the database at all.
 
 Run migration
 ```bash
@@ -41,7 +42,8 @@ $ php artisan migrate
 
 In your AuthServiceProvider modify boot()
 ```php
-use werk365\jwtauthroles\JwtAuthRoles;
+use Illuminate\Support\Facades\Auth;
+use Werk365\JwtAuthroles\JwtAuthRoles;
 
 public function boot()
 {
@@ -55,23 +57,25 @@ public function boot()
 
 Then either change one of your guards in config/auth.php to use the jwt driver and jwt_users provider, or add a new guard
 ```php
-'jwt' => [
-    'driver' => 'jwt',
-    'provider' => 'jwt_users',
-    'hash' => false,
-],
-```
-
-```php
 use werk365\jwtauthroles\Models\JwtUser;
-
-    'providers' => [
+'guards' => [
     // ...
-        'jwt_users' => [
-            'driver' => 'session', // or eloquent
-            'model' => JwtUser::class,
-        ],
+    'jwt' => [
+        'driver' => 'jwt',
+        'provider' => 'jwt_users',
+        'hash' => false,
     ],
+],
+
+// ...
+
+'providers' => [
+    // ...
+    'jwt_users' => [
+        'driver' => 'session', // or eloquent
+        'model' => JwtUser::class,
+    ],
+],
 ```
 
 Now you can use the JWT guard in your routes, for example on a group:
@@ -81,7 +85,35 @@ Route::group(['middleware' => ['auth:jwt']], function () {
 });
 ```
 
-If you do not use laravel-permission by spatie make sure to disable those features in the config.
+You can also use the RolesMiddelware to do role-based authentication on a route like this:
+```php
+    // single role
+    Route::get('/exammple', function(){
+        return "example";
+    })->middleware('role:example');
+
+    // multiple roles
+    Route::get('/exammples', function(){
+        return "examples";
+    })->middleware('role:example|second|third|etc');
+```
+
+To make the authenticated user actually useful, the JwtUser model extends the User model. This means that you can define any relations in the User model, and then use them for the authenticated user.
+
+For example, add the following relationship in the default User model:
+```php
+    public function documents()
+    {
+        return $this->hasMany('App\Document', 'user', 'uuid');
+    }
+```
+This assumes you have a Documents model where the uuid provided by your identity provider is stored in a 'user' column, this can be anything you want of course, but the local key should always be uuid.
+
+This can then be used as follows to retrieve all documents beloging to this user:
+
+```php
+return Auth::user()->documents;
+```
 
 ## Change log
 

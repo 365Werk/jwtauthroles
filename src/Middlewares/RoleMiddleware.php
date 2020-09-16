@@ -1,10 +1,10 @@
 <?php
 
-namespace werk365\jwtauthroles\Middlewares;
+namespace Werk365\JwtAuthRoles\Middlewares;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use werk365\jwtauthroles\Exceptions\AuthException;
+use Werk365\JwtAuthRoles\Exceptions\AuthException;
 
 class RoleMiddleware
 {

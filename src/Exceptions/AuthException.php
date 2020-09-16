@@ -1,6 +1,6 @@
 <?php
 
-namespace werk365\jwtauthroles\Exceptions;
+namespace Werk365\JwtAuthRoles\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
