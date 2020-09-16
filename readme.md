@@ -115,6 +115,9 @@ This can then be used as follows to retrieve all documents belonging to this use
 return Auth::user()->documents;
 ```
 
+## Laravel version
+Currently this package supports Laravel 8. Since we use the default User model, it expects it to be in the app\Models\User namespace. To make this package work with previous versions of Laravel, you'll only have to make a model in this namespace, besides that the package should work with any recent version.
+
 ## Change log
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.
