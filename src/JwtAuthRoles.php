@@ -15,7 +15,7 @@ class JwtAuthRoles
 {
     private static function getKid(string $jwt): ?string
     {
-        if (!Str::is('*.*.*', $jwt)) {
+        if (! Str::is('*.*.*', $jwt)) {
             throw AuthException::auth(422, 'Malformed JWT');
         }
 
@@ -30,7 +30,7 @@ class JwtAuthRoles
 
     private static function getClaims(string $jwt): ?object
     {
-        if (!Str::is('*.*.*', $jwt)) {
+        if (! Str::is('*.*.*', $jwt)) {
             throw AuthException::auth(422, 'Malformed JWT');
         }
 
@@ -42,7 +42,7 @@ class JwtAuthRoles
 
     private static function jwkToPem(object $jwk): ?string
     {
-        if (!isset($jwk->e) || !isset($jwk->n)) {
+        if (! isset($jwk->e) || ! isset($jwk->n)) {
             throw AuthException::auth(500, 'Malformed jwk');
         }
 
@@ -59,13 +59,13 @@ class JwtAuthRoles
     {
         $response = Http::get($uri);
         $json = $response->getBody();
-        if (!$json) {
+        if (! $json) {
             throw AuthException::auth(404, 'jwks endpoint not found');
         }
 
         $jwks = json_decode($json, false);
 
-        if (!$jwks || !isset($jwks->keys) || !is_array($jwks->keys)) {
+        if (! $jwks || ! isset($jwks->keys) || ! is_array($jwks->keys)) {
             throw AuthException::auth(404, 'No JWKs found');
         }
 
@@ -82,13 +82,13 @@ class JwtAuthRoles
     {
         $response = Http::get($uri);
         $json = $response->getBody();
-        if (!$json) {
+        if (! $json) {
             throw AuthException::auth(404, 'pem endpoint not found');
         }
 
         $pems = json_decode($json, false);
 
-        if (!$pems || !isset($pems->publicKeys) || !is_object($pems->publicKeys)) {
+        if (! $pems || ! isset($pems->publicKeys) || ! is_object($pems->publicKeys)) {
             throw AuthException::auth(404, 'pem not found');
         }
 
