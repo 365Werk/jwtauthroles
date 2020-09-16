@@ -72,7 +72,7 @@ use werk365\jwtauthroles\Models\JwtUser;
 'providers' => [
     // ...
     'jwt_users' => [
-        'driver' => 'session', // or eloquent
+        'driver' => 'eloquent',
         'model' => JwtUser::class,
     ],
 ],
@@ -109,7 +109,7 @@ For example, add the following relationship in the default User model:
 ```
 This assumes you have a Documents model where the uuid provided by your identity provider is stored in a 'user' column, this can be anything you want of course, but the local key should always be uuid.
 
-This can then be used as follows to retrieve all documents beloging to this user:
+This can then be used as follows to retrieve all documents belonging to this user:
 
 ```php
 return Auth::user()->documents;
