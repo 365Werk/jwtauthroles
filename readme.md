@@ -43,7 +43,7 @@ $ php artisan migrate
 In your AuthServiceProvider modify boot()
 ```php
 use Illuminate\Support\Facades\Auth;
-use Werk365\JwtAuthroles\JwtAuthRoles;
+use Werk365\JwtAuthRoles\JwtAuthRoles;
 
 public function boot()
 {
