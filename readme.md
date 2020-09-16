@@ -57,7 +57,7 @@ public function boot()
 
 Then either change one of your guards in config/auth.php to use the jwt driver and jwt_users provider, or add a new guard
 ```php
-use werk365\jwtauthroles\Models\JwtUser;
+use Werk365\JwtAuthRoles\Models\JwtUser;
 'guards' => [
     // ...
     'jwt' => [
