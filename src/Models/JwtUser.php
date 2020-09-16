@@ -2,7 +2,7 @@
 
 namespace Werk365\JwtAuthRoles\Models;
 
-use App\User;
+use App\Models\User;
 
 class JwtUser extends User
 {
