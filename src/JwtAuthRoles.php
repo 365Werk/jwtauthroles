@@ -52,7 +52,7 @@ class JwtAuthRoles
             'n' => new BigInteger(JWT::urlsafeB64Decode($jwk->n), 256),
         ]);
 
-        if($rsa->getPublicKey() ===  false){
+        if ($rsa->getPublicKey() === false) {
             return null;
         }
 
@@ -132,7 +132,7 @@ class JwtAuthRoles
         }
 
         if (config('jwtauthroles.cache.enabled')) {
-            if (config('jwtauthroles.cache.type') === 'database' && !$row) {
+            if (config('jwtauthroles.cache.type') === 'database' && ! $row) {
                 JwtKey::create(['kid' => $kid, 'key' => $publicKey]);
             }
         }
