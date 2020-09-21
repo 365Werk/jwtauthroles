@@ -52,6 +52,10 @@ class JwtAuthRoles
             'n' => new BigInteger(JWT::urlsafeB64Decode($jwk->n), 256),
         ]);
 
+        if($rsa->getPublicKey() ===  false){
+            return null;
+        }
+
         return $rsa->getPublicKey();
     }
 
@@ -107,6 +111,9 @@ class JwtAuthRoles
         if (! $kid) {
             throw AuthException::auth(422, 'Malformed JWT');
         }
+
+        $row = null;
+
         if (config('jwtauthroles.cache.enabled')) {
             if (config('jwtauthroles.cache.type') === 'database') {
                 $row = JwtKey::where('kid', $kid)
@@ -125,8 +132,8 @@ class JwtAuthRoles
         }
 
         if (config('jwtauthroles.cache.enabled')) {
-            if (config('jwtauthroles.cache.type') === 'database') {
-                $row = $row ?? JwtKey::create(['kid' => $kid, 'key' => $publicKey]);
+            if (config('jwtauthroles.cache.type') === 'database' && !$row) {
+                JwtKey::create(['kid' => $kid, 'key' => $publicKey]);
             }
         }
 
