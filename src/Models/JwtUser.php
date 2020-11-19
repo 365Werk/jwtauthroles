@@ -2,9 +2,9 @@
 
 namespace Werk365\JwtAuthRoles\Models;
 
-use App\Models\User;
+class_alias(config('jwtauthroles.userModel'), 'Werk365\\JwtAuthRoles\\Models\\AppUser');
 
-class JwtUser extends User
+class JwtUser extends AppUser
 {
     protected $guard_name = 'jwt';
     protected $fillable = ['uuid', 'roles', 'claims'];

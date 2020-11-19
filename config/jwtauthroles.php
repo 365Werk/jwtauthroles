@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'userModel' => env('FA_USER_MODEL', 'App\\Models\\User'),
+
     // If enabled, stores every user in the database
     'useDB' => env('FA_USE_DB', false),
 
