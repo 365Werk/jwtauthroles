@@ -28,7 +28,7 @@ class JwtAuthRoles
         return $header->kid ?? null;
     }
 
-    private static function getClaims(string $jwt): ?object
+    public static function getClaims(string $jwt): ?object
     {
         if (! Str::is('*.*.*', $jwt)) {
             throw AuthException::auth(422, 'Malformed JWT');
