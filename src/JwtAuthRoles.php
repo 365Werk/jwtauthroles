@@ -5,8 +5,8 @@ namespace Werk365\JwtAuthRoles;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use phpseclib\Crypt\RSA;
-use phpseclib\Math\BigInteger;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Math\BigInteger;
 use Werk365\JwtAuthRoles\Exceptions\AuthException;
 use Werk365\JwtAuthRoles\Models\JwtKey;
 use Werk365\JwtAuthRoles\Models\JwtUser;
@@ -46,17 +46,10 @@ class JwtAuthRoles
             throw AuthException::auth(500, 'Malformed jwk');
         }
 
-        $rsa = new RSA();
-        $rsa->loadKey([
+        return PublicKeyLoader::load([
             'e' => new BigInteger(JWT::urlsafeB64Decode($jwk->e), 256),
             'n' => new BigInteger(JWT::urlsafeB64Decode($jwk->n), 256),
-        ]);
-
-        if ($rsa->getPublicKey() === false) {
-            return null;
-        }
-
-        return $rsa->getPublicKey();
+        ])->withHash('sha1');
     }
 
     private static function getJwk(string $kid, string $uri): ?string
