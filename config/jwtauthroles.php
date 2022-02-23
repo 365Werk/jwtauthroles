@@ -6,6 +6,9 @@ return [
     // If enabled, stores every user in the database
     'useDB' => env('FA_USE_DB', false),
 
+    // If enabled, stores the user's roles in the database
+    'storeRoles' => env('FA_STORE_ROLES', true),
+
     // Only if useDB = true
     // Column name in the users table where uuid should be stored.'
     'userId' => env('FA_USR_ID', 'uuid'),
