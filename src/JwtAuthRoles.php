@@ -153,8 +153,8 @@ class JwtAuthRoles
                 $user[config('jwtauthroles.userId')] = $claims->sub;
                 if (config('jwtauthroles.storeRoles')){
                     $user->roles = json_encode($claims->roles);
-                } else {
-                    $user->roles = json_encode(array());
+                } elseif (!$user->exists) {
+                    $user->roles = json_encode([]);
                 }
                 $user->claims = json_encode($claims);
                 $user->save();
@@ -162,8 +162,6 @@ class JwtAuthRoles
                 $user = JwtUser::where(config('jwtauthroles.userId'), '=', $claims->sub)->firstOrFail();
                 if (config('jwtauthroles.storeRoles')){
                     $user->roles = json_encode($claims->roles);
-                } else {
-                    $user->roles = json_encode(array());
                 }
                 $user->claims = json_encode($claims);
                 $user->save();
@@ -171,10 +169,10 @@ class JwtAuthRoles
         } else {
             $user = new JwtUser;
             $user->uuid = $claims->sub;
-            if (config('jwtauthroles.storeRoles')){
+            if (config('jwtauthroles.storeRoles') && isset($claims->roles)){
                 $user->roles = $claims->roles;
             } else {
-                $user->roles = json_encode(array());
+                $user->roles = json_encode([]);
             }
             $user->claims = $claims;
         }
