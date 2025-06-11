@@ -13,7 +13,7 @@
     "homepage": "https://github.com/365werk/jwtauthroles",
     "keywords": ["Laravel", "jwtauthroles"],
     "require": {
-        "illuminate/support": "~5|~6|~7|~8|~9|~10",
+        "illuminate/support": "~5|~6|~7|~8|~9|~10|~11|~12",
         "firebase/php-jwt": "^5.4",
         "phpseclib/phpseclib": "^3.0.7"
     },
